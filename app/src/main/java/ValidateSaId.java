@@ -19,6 +19,7 @@ public class ValidateSaId {
             return false;
         }
 
+
         // Validate citizenship digit (0 or 1)
         int citizenship = Integer.parseInt(idNumber.substring(10, 11));
         if (citizenship != 0 && citizenship != 1) {
