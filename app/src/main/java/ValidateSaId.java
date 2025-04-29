@@ -1,3 +1,6 @@
+import java.time.DateTimeException;
+import java.time.LocalDate;
+
 public class ValidateSaId {
 
     public static boolean isIdNumberValid(String idNumber) {
@@ -10,6 +13,12 @@ public class ValidateSaId {
         int month = Integer.parseInt(idNumber.substring(2, 4));
         int day = Integer.parseInt(idNumber.substring(4, 6));
 
+        int fullYear = (year >= 0 && year <= 99) ? (year > 50 ? 1900 + year : 2000 + year) : -1;
+        try {
+            LocalDate.of(fullYear, month, day);
+        } catch (DateTimeException e) {
+            return false;
+        }
         
         if (month < 1 || month > 12) {
             return false;
