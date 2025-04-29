@@ -19,7 +19,12 @@ public class ValidateSaId {
         } catch (DateTimeException e) {
             return false;
         }
-        
+
+        // Validate gender code
+        int genderCode = Integer.parseInt(idNumber.substring(6, 10));
+        if (genderCode < 0 || genderCode > 9999) {
+            return false;
+        }
         if (month < 1 || month > 12) {
             return false;
         }
