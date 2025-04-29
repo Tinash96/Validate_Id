@@ -10,6 +10,7 @@ public class ValidateSaId {
         int month = Integer.parseInt(idNumber.substring(2, 4));
         int day = Integer.parseInt(idNumber.substring(4, 6));
 
+        
         if (month < 1 || month > 12) {
             return false;
         }
