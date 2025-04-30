@@ -14,6 +14,7 @@ public class ValidateSaId {
         int day = Integer.parseInt(idNumber.substring(4, 6));
         int fullYear = (year > 50 ? 1900 + year : 2000 + year);
 
+        
         try {
             LocalDate birthDate = LocalDate.of(fullYear, month, day);
         } catch (DateTimeException e) {
