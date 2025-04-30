@@ -46,4 +46,9 @@ public class ValidateSaIdTest {
         assertFalse(ValidateSaId.isIdNumberValid("2001014800087")); // Checksum invalid
     }
 
+    @Test
+    void testNullOrEmptyInput() {
+        assertFalse(ValidateSaId.isIdNumberValid(null));
+        assertFalse(ValidateSaId.isIdNumberValid(""));
+    }
 }
