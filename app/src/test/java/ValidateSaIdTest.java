@@ -15,6 +15,7 @@ public class ValidateSaIdTest {
         assertFalse(ValidateSaId.isIdNumberValid("20010148000"));
     }
 
+
     @Test
     void shouldReturnFalseForLongId() {
         assertFalse(ValidateSaId.isIdNumberValid("20010148"));
