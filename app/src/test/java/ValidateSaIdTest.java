@@ -41,6 +41,7 @@ public class ValidateSaIdTest {
         assertFalse(ValidateSaId.isIdNumberValid("2001014800286")); // Citizenship '2' invalid
     }
 
+
     @Test
     void shouldReturnFalseForInvalidChecksum() {
         assertFalse(ValidateSaId.isIdNumberValid("2001014800087")); // Checksum invalid
