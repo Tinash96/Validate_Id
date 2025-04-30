@@ -39,9 +39,9 @@ public class ValidateSaId {
             return false;
         }
 
-
-        // Validate checksum with Luhn algorithm
+         // Validate checksum with Luhn algorithm
         return isValidLuhn(idNumber);
+
     }
 
     private static boolean isValidLuhn(String idNumber) {
