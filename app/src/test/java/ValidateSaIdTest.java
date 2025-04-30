@@ -31,9 +31,6 @@ public class ValidateSaIdTest {
     }
 
 
-
-
-
     @Test
     void shouldReturnFalseForInvalidDay() {
         assertFalse(ValidateSaId.isIdNumberValid("2001324800086")); // Day 32 invalid
