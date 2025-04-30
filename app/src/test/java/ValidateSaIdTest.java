@@ -4,10 +4,11 @@ import org.junit.jupiter.api.Test;
 public class ValidateSaIdTest {
 
     @Test
-    void shouldReturnTrueForValidIds() {
+    void testValidIdNumbers() {
         assertTrue(ValidateSaId.isIdNumberValid("2001014800086"));
         assertTrue(ValidateSaId.isIdNumberValid("2909035800085"));
     }
+
 
     @Test
     void shouldReturnFalseForShortId() {
