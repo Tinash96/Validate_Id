@@ -20,11 +20,13 @@ public class ValidateSaIdTest {
         assertFalse(ValidateSaId.isIdNumberValid("20010148"));
     }
 
-
     @Test
-    void shouldReturnFalseForIdWithLetters() {
-        assertFalse(ValidateSaId.isIdNumberValid("2001000800086"));
+    void testNonNumericCharacters() {
+        assertFalse(ValidateSaId.isIdNumberValid("20010A4800086"));
     }
+
+
+
 
     @Test
     void shouldReturnFalseForInvalidMonth() {
