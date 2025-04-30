@@ -20,6 +20,8 @@ public class ValidateSaId {
             return false;
         }
 
+
+
         // Validate gender code
         int genderCode = Integer.parseInt(idNumber.substring(6, 10));
         if (genderCode < 0 || genderCode > 9999) {
