@@ -8,7 +8,7 @@ public class ValidateSaId {
 
     /**
      * Validates the South African ID number.
-     * Checks for correct format, valid birth date, gender, citizenship, and checksum.
+     * Checks format, birth date, gender code, citizenship, and Luhn checksum.
      *
      * @param idNumber the 13-digit SA ID number
      * @return true if valid; false otherwise
@@ -21,12 +21,16 @@ public class ValidateSaId {
         return isValidLuhnChecksum(idNumber);
     }
 
-    /** Check if ID number is non-null and exactly 13 digits */
+    /**
+     * Checks if ID number is non-null and exactly 13 digits long.
+     */
     private static boolean isProperFormat(String idNumber) {
         return idNumber != null && idNumber.matches("\\d{13}");
     }
 
-    /** Validate birth date encoded in the ID number */
+    /**
+     * Validates the birth date embedded in the ID number (YYMMDD).
+     */
     private static boolean isValidBirthDate(String idNumber) {
         int year = Integer.parseInt(idNumber.substring(0, 2));
         int month = Integer.parseInt(idNumber.substring(2, 4));
@@ -41,20 +45,41 @@ public class ValidateSaId {
         }
     }
 
-    /** Validate gender code (0000 to 9999) */
+    /**
+     * Validates gender code is in the correct range (0000–9999).
+     * Optional: Add specific range validation (e.g., male/female) if required by business rules.
+     */
     private static boolean isValidGenderCode(String idNumber) {
         int genderCode = Integer.parseInt(idNumber.substring(6, 10));
-        // You can refine this if business logic requires a gender range check here
         return genderCode >= 0 && genderCode <= 9999;
     }
 
-    /** Validate citizenship digit: 0 for SA citizen, 1 for permanent resident */
+    /**
+     * Determines the gender based on gender code:
+     * 0000–4999 = Female, 5000–9999 = Male.
+     *
+     * @param idNumber the SA ID number
+     * @return "Male", "Female", or "Unknown"
+     */
+    public static String getGender(String idNumber) {
+        if (!isProperFormat(idNumber)) return "Unknown";
+        int genderCode = Integer.parseInt(idNumber.substring(6, 10));
+        if (genderCode >= 0 && genderCode <= 4999) return "Female";
+        if (genderCode >= 5000 && genderCode <= 9999) return "Male";
+        return "Unknown";
+    }
+
+    /**
+     * Validates citizenship digit: 0 = SA citizen, 1 = permanent resident.
+     */
     private static boolean isValidCitizenship(String idNumber) {
         int citizenshipDigit = Integer.parseInt(idNumber.substring(10, 11));
         return citizenshipDigit == 0 || citizenshipDigit == 1;
     }
 
-    /** Validate the ID number using the Luhn checksum algorithm */
+    /**
+     * Validates the ID number using the Luhn checksum algorithm.
+     */
     private static boolean isValidLuhnChecksum(String idNumber) {
         int sum = 0;
         boolean alternate = false;
