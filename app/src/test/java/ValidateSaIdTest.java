@@ -6,20 +6,15 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Unit tests for the ValidateSaId utility class.
- * Tests are organized using @Nested and @ParameterizedTest for better readability and maintenance.
+ * Unit tests for the {@link ValidateSaId} utility class.
  */
 public class ValidateSaIdTest {
 
     /**
-     * Tests for valid South African ID numbers.
+     * Tests to verify that valid South African ID numbers are correctly validated.
      */
     @Nested
     class ValidIdNumbers {
-
-        /**
-         * Valid ID numbers should return true.
-         */
         @ParameterizedTest
         @ValueSource(strings = {
             "2001014800086",
@@ -31,33 +26,22 @@ public class ValidateSaIdTest {
     }
 
     /**
-     * Tests for various invalid ID number conditions.
+     * Tests to verify that invalid South African ID numbers are correctly rejected.
      */
     @Nested
     class InvalidIdNumbers {
-
-        /**
-         * Invalid ID numbers should return false:
-         * - Too short
-         * - Contains non-numeric characters
-         * - Invalid birth date (month/day)
-         * - Invalid citizenship digit
-         */
         @ParameterizedTest
         @ValueSource(strings = {
             "20010148000",      // Too short
             "20010A4800086",    // Non-numeric character
-            "2013014800086",    // Invalid month (13)
-            "2001324800086",    // Invalid day (32)
+            "2013014800086",    // Invalid month
+            "2001324800086",    // Invalid day
             "2001014800286"     // Invalid citizenship digit
         })
         void shouldReturnFalseForInvalidIds(String id) {
             assertFalse(ValidateSaId.isIdNumberValid(id));
         }
 
-        /**
-         * Null or empty string input should return false.
-         */
         @ParameterizedTest
         @NullAndEmptySource
         void shouldReturnFalseForNullOrEmptyInput(String id) {
@@ -66,63 +50,54 @@ public class ValidateSaIdTest {
     }
 
     /**
-     * Tests specific to checksum validation.
+     * Tests related to the Luhn checksum validation in South African ID numbers.
      */
     @Nested
     class ChecksumValidation {
-
-        /**
-         * Should return true if the checksum is valid.
-         */
         @Test
         void shouldReturnTrueForValidChecksum() {
-            String validChecksumId = "2001014800086"; // Known valid ID
+            String validChecksumId = "2001014800086";
             assertTrue(ValidateSaId.isIdNumberValid(validChecksumId));
         }
 
-        /**
-         * Should return false if the checksum is invalid.
-         */
         @Test
         void shouldReturnFalseForInvalidChecksum() {
-            String invalidChecksumId = "2001014800087"; // Luhn checksum fails
+            String invalidChecksumId = "2001014800087";
             assertFalse(ValidateSaId.isIdNumberValid(invalidChecksumId));
         }
     }
-    
+
     /**
-     * Tests specific to gender code validation.
+     * Tests for detecting gender from South African ID numbers.
      */
     @Nested
-    class GenderCodeValidation {
+    class GenderDetection {
 
         /**
-         * Valid gender codes (0000 to 9999) should return true.
+         * Should return FEMALE for gender codes below 5000.
          */
-        @ParameterizedTest
-        @ValueSource(strings = {
-            "2001010000086",  // gender code 0000 (lower bound)
-            "2001019999086"   // gender code 9999 (upper bound)
-        })
-        void shouldReturnTrueForValidGenderCodes(String id) {
-            assertTrue(ValidateSaId.isIdNumberValid(id));
+        @Test
+        void shouldReturnFemaleForGenderCodeBelow5000() {
+            String femaleId = "2001010000086"; // gender code 0000
+            assertEquals(ValidateSaId.Gender.FEMALE, ValidateSaId.getGender(femaleId));
         }
 
         /**
-         * Invalid gender codes (less than 0000 or greater than 9999) should return false.
-         * Since digits are 4 digits, invalid cases might be hard to form but we simulate by invalid checksum or format.
+         * Should return MALE for gender codes 5000 or above.
          */
-        @ParameterizedTest
-        @ValueSource(strings = {
-            "2001011000086", // a valid gender code within range, so just a placeholder
-        })
-        void shouldReturnTrueForBoundaryGenderCodes(String id) {
-            // This test can be used for boundary if needed
-            assertTrue(ValidateSaId.isIdNumberValid(id));
+        @Test
+        void shouldReturnMaleForGenderCode5000OrAbove() {
+            String maleId = "2001015000084"; // gender code 5000
+            assertEquals(ValidateSaId.Gender.MALE, ValidateSaId.getGender(maleId));
         }
 
-        // Note: Since gender code is numeric substring of 4 digits,
-        // values outside 0000-9999 cannot occur because of the regex check.
-        // But if business rules change, add tests accordingly.
+        /**
+         * Should return UNKNOWN for invalid ID numbers.
+         */
+        @Test
+        void shouldReturnUnknownForInvalidId() {
+            String invalidId = "123"; // clearly invalid
+            assertEquals(ValidateSaId.Gender.UNKNOWN, ValidateSaId.getGender(invalidId));
+        }
     }
 }
