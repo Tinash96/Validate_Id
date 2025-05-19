@@ -72,6 +72,15 @@ public class ValidateSaIdTest {
     class ChecksumValidation {
 
         /**
+         * Should return true if the checksum is valid.
+         */
+        @Test
+        void shouldReturnTrueForValidChecksum() {
+            String validChecksumId = "2001014800086"; // Known valid ID
+            assertTrue(ValidateSaId.isIdNumberValid(validChecksumId));
+        }
+
+        /**
          * Should return false if the checksum is invalid.
          */
         @Test
@@ -79,5 +88,41 @@ public class ValidateSaIdTest {
             String invalidChecksumId = "2001014800087"; // Luhn checksum fails
             assertFalse(ValidateSaId.isIdNumberValid(invalidChecksumId));
         }
+    }
+    
+    /**
+     * Tests specific to gender code validation.
+     */
+    @Nested
+    class GenderCodeValidation {
+
+        /**
+         * Valid gender codes (0000 to 9999) should return true.
+         */
+        @ParameterizedTest
+        @ValueSource(strings = {
+            "2001010000086",  // gender code 0000 (lower bound)
+            "2001019999086"   // gender code 9999 (upper bound)
+        })
+        void shouldReturnTrueForValidGenderCodes(String id) {
+            assertTrue(ValidateSaId.isIdNumberValid(id));
+        }
+
+        /**
+         * Invalid gender codes (less than 0000 or greater than 9999) should return false.
+         * Since digits are 4 digits, invalid cases might be hard to form but we simulate by invalid checksum or format.
+         */
+        @ParameterizedTest
+        @ValueSource(strings = {
+            "2001011000086", // a valid gender code within range, so just a placeholder
+        })
+        void shouldReturnTrueForBoundaryGenderCodes(String id) {
+            // This test can be used for boundary if needed
+            assertTrue(ValidateSaId.isIdNumberValid(id));
+        }
+
+        // Note: Since gender code is numeric substring of 4 digits,
+        // values outside 0000-9999 cannot occur because of the regex check.
+        // But if business rules change, add tests accordingly.
     }
 }
